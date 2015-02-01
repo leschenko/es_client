@@ -1,6 +1,6 @@
 # EsClient
 
-TODO: Write a gem description
+This elasticsearch client is just all you need to search and index your data with persistent http connection
 
 ## Installation
 

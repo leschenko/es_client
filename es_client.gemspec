@@ -4,21 +4,23 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'es_client/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "es_client"
+  spec.name          = 'es_client'
   spec.version       = EsClient::VERSION
-  spec.authors       = ["Alex Leschenko"]
-  spec.email         = ["leschenko.al@gmail.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
-  spec.license       = "MIT"
+  spec.authors       = ['Alex Leschenko']
+  spec.email         = ['leschenko.al@gmail.com']
+  spec.summary       = 'Simple and robust elasticsearch client'
+  spec.description   = 'This elasticsearch client is just all you need to search and index your data with persistent http connection'
+  spec.homepage      = 'https://github.com/leschenko/es_client'
+  spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
-  spec.require_paths = ["lib"]
+  spec.require_paths = ['lib']
 
-  spec.add_development_dependency "bundler", "~> 1.7"
-  spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "rspec"
+  spec.add_development_dependency 'bundler', '~> 1.7'
+  spec.add_development_dependency 'rake', '~> 10.0'
+  spec.add_development_dependency 'rspec'
+  
+  spec.add_dependency 'excon'
 end
