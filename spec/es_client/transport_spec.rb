@@ -3,6 +3,11 @@ require 'es_client'
 
 describe EsClient::Transport do
   describe 'request' do
+    it 'initialize excon' do
+      expect(Excon).to receive(:new).with('http://example.com', {persistent: true}).and_return(double(:connection).as_null_object)
+      EsClient::Transport.new('http://example.com', {persistent: true}).get('/example')
+    end
+
     context 'success' do
       before do
         Excon.stub({}, lambda { |request_params| {body: request_params[:method].to_s, status: 200} })
