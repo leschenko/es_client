@@ -4,9 +4,9 @@ module EsClient
     attr_reader :body, :code, :headers
 
     def initialize(body, code, headers={})
-      @body = headers
+      @body = body
       @code = code.to_i
-      @headers = body
+      @headers = headers
     end
 
     def success?
@@ -17,8 +17,8 @@ module EsClient
       !success?
     end
 
-    def to_s
-      [code, body].join(' : ')
+    def decoded
+      @decoded ||= JSON.load(@body)
     end
   end
 
