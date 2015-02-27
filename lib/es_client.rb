@@ -1,7 +1,8 @@
 require 'es_client/version'
 require 'excon'
-require 'es_client/transport'
+require 'active_support/all'
 
 module EsClient
-  # Your code goes here...
+  autoload :Transport, 'es_client/transport'
+  autoload :Response, 'es_client/response'
 end
