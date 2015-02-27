@@ -31,9 +31,16 @@ module EsClient
     def request(options)
       retry_times = 0
       begin
-        connection.request(options)
-      rescue Excon::Errors::SocketError
-        raise if retry_times >= RETRY_TIMES
+        raw_response = connection.request(options)
+        response = ::EsClient::Response.new(raw_response.body, raw_response.status, raw_response.headers)
+        EsClient.logger.request(options, connection, response) if EsClient.logger.try!(:debug?)
+        response
+      rescue Excon::Errors::SocketError => e
+        if retry_times >= RETRY_TIMES
+          exception = ::EsClient::Transport::Error.new(e, self)
+          EsClient.logger.exception(exception, options, connection) if EsClient.logger
+          raise exception
+        end
         retry_times += 1
         reconnect!
         retry
@@ -46,6 +53,22 @@ module EsClient
 
     def reconnect!
       @connection = nil
+    end
+
+    def log(message, level=:info)
+      EsClient.logger.try!(level, message)
+    end
+
+    class Error < StandardError
+
+      attr_reader :transport
+
+      def initialize(excon_error, transport)
+        @transport = transport
+        super("#{excon_error.message} (#{excon_error.class})")
+        set_backtrace(excon_error.backtrace)
+      end
+
     end
   end
 end

@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'es_client'
 
 describe EsClient::Transport do
   describe 'request' do
@@ -10,22 +9,25 @@ describe EsClient::Transport do
 
     context 'success' do
       before do
-        Excon.stub({}, lambda { |request_params| {body: request_params[:method].to_s, status: 200} })
+        Excon.stub({}, {})
       end
 
       it 'make request' do
         transport = EsClient::Transport.new('http://example.com', {})
-        expect(transport.request(method: :options, path: '/example', mock: true).body).to eq 'options'
+        expect(transport.connection).to receive(:request).with(hash_including(method: :options)).and_return(double(:response).as_null_object)
+        transport.request(method: :options, path: '/example', mock: true)
       end
 
       it 'make get request' do
         transport = EsClient::Transport.new('http://example.com', {})
-        expect(transport.get('/example', mock: true).body).to eq 'get'
+        expect(transport.connection).to receive(:request).with(hash_including(method: :get)).and_return(double(:response).as_null_object)
+        transport.get('/example', mock: true)
       end
 
       it 'make post request' do
         transport = EsClient::Transport.new('http://example.com', {})
-        expect(transport.post('/example', mock: true).body).to eq 'post'
+        expect(transport.connection).to receive(:request).with(hash_including(method: :post)).and_return(double(:response).as_null_object)
+        transport.post('/example', mock: true)
       end
     end
 

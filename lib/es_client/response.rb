@@ -18,7 +18,8 @@ module EsClient
     end
 
     def decoded
-      @decoded ||= JSON.load(@body)
+      return if @body.blank?
+      @decoded ||= JSON.parse(@body)
     end
   end
 
