@@ -31,14 +31,14 @@ module EsClient
     def request(options)
       retry_times = 0
       begin
-        raw_response = connection.request(options)
+        raw_response = http.request(options)
         response = ::EsClient::Response.new(raw_response.body, raw_response.status, raw_response.headers)
-        EsClient.logger.request(options, connection, response) if EsClient.logger.try!(:debug?)
+        EsClient.logger.request(options, http, response) if EsClient.logger.try!(:debug?)
         response
       rescue Excon::Errors::SocketError => e
         if retry_times >= RETRY_TIMES
           exception = ::EsClient::Transport::Error.new(e, self)
-          EsClient.logger.exception(exception, options, connection) if EsClient.logger
+          EsClient.logger.exception(exception, options, http) if EsClient.logger
           raise exception
         end
         retry_times += 1
@@ -47,12 +47,12 @@ module EsClient
       end
     end
 
-    def connection
-      @connection ||= Excon.new(@host, @options)
+    def http
+      @http ||= Excon.new(@host, @options)
     end
 
     def reconnect!
-      @connection = nil
+      @http = nil
     end
 
     def log(message, level=:info)

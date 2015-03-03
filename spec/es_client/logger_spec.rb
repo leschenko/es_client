@@ -10,7 +10,7 @@ describe EsClient::Logger do
 
   it 'log exception' do
     transport = EsClient::Transport.new('http://example.com', {})
-    allow(transport.connection).to receive(:request) { raise Excon::Errors::SocketError.new(StandardError.new) }
+    allow(transport.http).to receive(:request) { raise Excon::Errors::SocketError.new(StandardError.new) }
     allow(transport).to receive(:reconnect!)
     expect(EsClient.logger).to receive(:error).with(/SocketError.*?curl/m)
     expect { transport.get('/example',) }.to raise_error

@@ -1,25 +1,25 @@
 module EsClient
   class Logger < ::Logger
 
-    def request(options, connection, response)
+    def request(options, http, response)
       return unless debug?
       took = response.try!(:decoded).try!(:fetch, 'took') ? response.decoded['took'] : 'N/A'
-      debug "[#{took} msec] #{to_curl(options, connection)}"
+      debug "[#{took} msec] #{to_curl(options, http)}"
     end
 
-    def exception(e, options=nil, connection=nil)
+    def exception(e, options=nil, http=nil)
       backtrace = e.backtrace.map { |l| "#{' ' * 2}#{l}" }.join("\n")
-      curl = "\n  #{to_curl(options, connection)}" if options && connection
+      curl = "\n  #{to_curl(options, http)}" if options && http
       error "#{e.class} #{e.message} #{curl}\n#{backtrace}\n\n"
     end
 
     private
 
-    def to_curl(options, connection)
+    def to_curl(options, http)
       res = 'curl -X '
       res << options[:method].to_s.upcase
 
-      res << " '#{connection.params[:scheme]}://#{connection.params[:host]}#{options[:path]}"
+      res << " '#{http.params[:scheme]}://#{http.params[:host]}#{options[:path]}"
       if options[:query].present?
         res << '?'
         res << options[:query].is_a?(String) ? options[:query] : options[:query].to_query
