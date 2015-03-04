@@ -59,4 +59,21 @@ describe EsClient::Index do
       expect(index.get_mapping).to eq({'product' => {'properties' => {'sku' => {'type' => 'string'}}}})
     end
   end
+
+  describe 'store' do
+    it 'store document' do
+      index = EsClient::Index.new('test_index')
+      index.create
+      expect(index.store('test', {}).success?).to eq true
+    end
+  end
+
+  describe 'find' do
+    it 'find document' do
+      index = EsClient::Index.new('test_index')
+      index.create
+      index.store('test', {id: 1, name: 'test'})
+      expect(index.find('test', 1)['name']).to eq 'test'
+    end
+  end
 end

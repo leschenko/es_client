@@ -33,7 +33,15 @@ module EsClient
     # index.put_mapping 'product', properties: {sku: {type: "string"}}
     def put_mapping(type, mapping)
       json = {type => mapping}.to_json
-      EsClient.client.put("/#{path}/_mapping/#{type}", {body: json})
+      EsClient.client.put("/#{name}/_mapping/#{type}", body: json)
+    end
+
+    def store(type, document)
+      EsClient.client.post("/#{name}/#{type}/#{document[:id]}", body: document.to_json)
+    end
+
+    def find(type, id)
+      EsClient.client.get("/#{name}/#{type}/#{id}").decoded['_source']
     end
   end
 end
