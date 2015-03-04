@@ -54,7 +54,7 @@ describe EsClient::Index do
   describe 'put_mapping' do
     it 'update mapping' do
       index = EsClient::Index.new('test_index')
-      index.create
+      index.recreate
       expect(index.put_mapping('product', {properties: {sku: {type: 'string'}}}).success?).to eq true
       expect(index.get_mapping).to eq({'product' => {'properties' => {'sku' => {'type' => 'string'}}}})
     end
@@ -63,7 +63,7 @@ describe EsClient::Index do
   describe 'store' do
     it 'store document' do
       index = EsClient::Index.new('test_index')
-      index.create
+      index.recreate
       expect(index.store('test', {}).success?).to eq true
     end
   end
@@ -71,9 +71,40 @@ describe EsClient::Index do
   describe 'find' do
     it 'find document' do
       index = EsClient::Index.new('test_index')
-      index.create
+      index.recreate
       index.store('test', {id: 1, name: 'test'})
       expect(index.find('test', 1)['name']).to eq 'test'
     end
+  end
+
+  describe 'bulk' do
+    it 'perform bulk indexing' do
+      index = EsClient::Index.new('test_index')
+      index.recreate
+      index.bulk(:index, 'test', [{id: 1, name: 'test'}])
+      expect(index.find('test', 1)['name']).to eq 'test'
+    end
+
+    it 'perform bulk update' do
+      index = EsClient::Index.new('test_index')
+      index.recreate
+      index.store('test', {id: 1, name: 'test'})
+      index.bulk(:update, 'test', [{id: 1, name: 'updated name'}])
+      expect(index.find('test', 1)['name']).to eq 'updated name'
+    end
+
+    it 'perform bulk delete' do
+      index = EsClient::Index.new('test_index')
+      index.recreate
+      index.store('test', {id: 1, name: 'test'})
+      index.bulk(:delete, 'test', [{id: 1}])
+      expect(index.find('test', 1)).to be_nil
+    end
+  end
+
+  it 'refresh index' do
+    index = EsClient::Index.new('test_index')
+    index.recreate
+    expect(index.refresh.success?).to eq true
   end
 end

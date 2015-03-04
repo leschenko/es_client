@@ -12,6 +12,11 @@ module EsClient
       EsClient.client.head("/#{name}").success?
     end
 
+    def recreate
+      delete
+      create
+    end
+
     # index.create mappings: {product: {properties: {sku: {type: "string"}}}}, settings: {number_of_shards: 1}
     def create
       request_options = @options.present? ? {body: @options.to_json} : {}
@@ -20,6 +25,10 @@ module EsClient
 
     def delete
       EsClient.client.delete("/#{name}")
+    end
+
+    def refresh
+      EsClient.client.post("/#{name}/_refresh")
     end
 
     def get_settings
@@ -42,6 +51,20 @@ module EsClient
 
     def find(type, id)
       EsClient.client.get("/#{name}/#{type}/#{id}").decoded['_source']
+    end
+
+    def bulk(action, type, documents)
+      payload = []
+      documents.each do |document|
+        payload << {action => {_index: name, _type: type, _id: document[:id]}}
+        case action
+          when :index
+            payload << document
+          when :update
+            payload << {doc: document}
+        end
+      end
+      EsClient.client.post("/#{name}/#{type}/_bulk", body: "\n" + payload.map(&:to_json).join("\n") + "\n")
     end
   end
 end
