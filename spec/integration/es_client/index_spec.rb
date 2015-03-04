@@ -50,4 +50,13 @@ describe EsClient::Index do
       expect(index.delete.success?).to eq false
     end
   end
+
+  describe 'put_mapping' do
+    it 'update mapping' do
+      index = EsClient::Index.new('test_index')
+      index.create
+      expect(index.put_mapping('product', {properties: {sku: {type: 'string'}}}).success?).to eq true
+      expect(index.get_mapping).to eq({'product' => {'properties' => {'sku' => {'type' => 'string'}}}})
+    end
+  end
 end
