@@ -1,5 +1,5 @@
 module EsClient
-  class Transport
+  class Client
 
     RETRY_TIMES = 1
 
@@ -37,7 +37,7 @@ module EsClient
         response
       rescue Excon::Errors::SocketError => e
         if retry_times >= RETRY_TIMES
-          exception = ::EsClient::Transport::Error.new(e, self)
+          exception = ::EsClient::Client::Error.new(e, self)
           EsClient.logger.exception(exception, options, http) if EsClient.logger
           raise exception
         end
