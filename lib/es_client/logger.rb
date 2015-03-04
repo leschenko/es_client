@@ -3,7 +3,7 @@ module EsClient
 
     def request(options, http, response)
       return unless debug?
-      took = response.try!(:decoded).try!(:fetch, 'took') ? response.decoded['took'] : 'N/A'
+      took = response.try!(:decoded).try!(:[], 'took') ? response.decoded['took'] : 'N/A'
       debug "[#{took} msec] #{to_curl(options, http)}"
     end
 
@@ -16,12 +16,16 @@ module EsClient
     private
 
     def to_curl(options, http)
-      res = 'curl -X '
+      res = 'curl -i -X '
       res << options[:method].to_s.upcase
 
-      res << " '#{http.params[:scheme]}://#{http.params[:host]}#{options[:path]}"
+      res << " '#{http.params[:scheme]}://#{http.params[:host]}"
+      res << ":#{http.params[:port]}" if http.params[:port]
+      res << options[:path]
+      res << '?'
+      res << 'pretty'
       if options[:query].present?
-        res << '?'
+        res << '&'
         res << options[:query].is_a?(String) ? options[:query] : options[:query].to_query
       end
       res << "'"
