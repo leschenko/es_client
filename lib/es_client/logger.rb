@@ -4,7 +4,7 @@ module EsClient
     def request(options, http, response)
       return unless debug?
       took = response.try!(:decoded).try!(:[], 'took') ? response.decoded['took'] : 'N/A'
-      debug "[#{took} msec] #{to_curl(options, http)}"
+      debug "[#{response.code}](#{took} msec) #{to_curl(options, http)}"
     end
 
     def exception(e, options=nil, http=nil)

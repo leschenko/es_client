@@ -4,7 +4,7 @@ describe EsClient::Logger do
   it 'log request' do
     Excon.stub({}, {body: '{"took": 10}'})
     transport = EsClient::Client.new('http://example.com', {})
-    expect(EsClient.logger).to receive(:debug).with(/\[10 msec\] curl/)
+    expect(EsClient.logger).to receive(:debug).with(Regexp.new(Regexp.escape('[200](10 msec) curl')))
     transport.get('/example', mock: true)
   end
 
