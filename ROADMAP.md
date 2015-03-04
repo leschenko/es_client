@@ -1,7 +1,7 @@
-- [x] Transport
+- [x] Client
 - [x] Response
 - [x] Logger
-- [ ] Index
+- [x] Index
 - [ ] Importing
 - [ ] Search
 - [ ] ModelAdapter
