@@ -61,10 +61,13 @@ module EsClient
           when :index
             payload << document
           when :update
-            payload << {doc: document}
+            document_for_update = {doc: document}
+            document_for_update.update(document[:bulk_options]) if document[:bulk_options]
+            payload << document_for_update
         end
       end
-      EsClient.client.post("/#{name}/#{type}/_bulk", body: "\n" + payload.map(&:to_json).join("\n") + "\n")
+      serialized_payload = "\n" + payload.map(&:to_json).join("\n") + "\n"
+      EsClient.client.post("/#{name}/#{type}/_bulk", body: serialized_payload)
     end
   end
 end

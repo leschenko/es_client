@@ -93,6 +93,13 @@ describe EsClient::Index do
       expect(index.find('test', 1)['name']).to eq 'updated name'
     end
 
+    it 'perform bulk update with options' do
+      index = EsClient::Index.new('test_index')
+      index.recreate
+      index.bulk(:update, 'test', [{id: 1, name: 'updated name', bulk_options: {doc_as_upsert: true}}])
+      expect(index.find('test', 1)['name']).to eq 'updated name'
+    end
+
     it 'perform bulk delete' do
       index = EsClient::Index.new('test_index')
       index.recreate
