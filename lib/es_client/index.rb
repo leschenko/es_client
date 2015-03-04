@@ -8,22 +8,18 @@ module EsClient
       @options = options
     end
 
-    def path
-      "/#{name}"
-    end
-
     def exists?
-      EsClient.client.head(path).success?
+      EsClient.client.head("/#{name}").success?
     end
 
     # index.create mappings: {product: {properties: {sku: {type: "string"}}}}, settings: {number_of_shards: 1}
     def create
       request_options = @options.present? ? {body: @options.to_json} : {}
-      EsClient.client.post(path, request_options)
+      EsClient.client.post("/#{name}", request_options)
     end
 
     def delete
-      EsClient.client.delete(path)
+      EsClient.client.delete("/#{name}")
     end
 
     def get_settings
@@ -37,7 +33,7 @@ module EsClient
     # index.put_mapping 'product', properties: {sku: {type: "string"}}
     def put_mapping(type, mapping)
       json = {type => mapping}.to_json
-      EsClient.client.put("/#{name}/_mapping/#{type}", {body: json})
+      EsClient.client.put("/#{path}/_mapping/#{type}", {body: json})
     end
   end
 end
