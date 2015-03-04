@@ -33,12 +33,12 @@ module EsClient
       begin
         raw_response = http.request(options)
         response = ::EsClient::Response.new(raw_response.body, raw_response.status, raw_response.headers)
-        EsClient.logger.request(options, http, response) if EsClient.logger.try!(:debug?)
+        EsClient.logger.request(http, response, options) if EsClient.logger.try!(:debug?)
         response
       rescue Excon::Errors::SocketError => e
         if retry_times >= RETRY_TIMES
           exception = ::EsClient::Client::Error.new(e, self)
-          EsClient.logger.exception(exception, options, http) if EsClient.logger
+          EsClient.logger.exception(exception, http, options) if EsClient.logger
           raise exception
         end
         retry_times += 1

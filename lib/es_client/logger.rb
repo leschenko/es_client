@@ -1,41 +1,57 @@
 module EsClient
   class Logger < ::Logger
 
-    def request(options, http, response)
-      return unless debug?
-      took = response.try!(:decoded).try!(:[], 'took') ? response.decoded['took'] : 'N/A'
-      debug "[#{response.code}](#{took} msec) #{to_curl(options, http)}"
+    def initialize(path, options)
+      super(path)
+      @options = options
     end
 
-    def exception(e, options=nil, http=nil)
+    def request(http, response, options)
+      return unless debug?
+      took = response.try!(:decoded).try!(:[], 'took') ? response.decoded['took'] : 'N/A'
+      message = "[#{response.code}](#{took} msec) #{to_curl(http, options)}"
+      message << "\n#{JSON.pretty_generate(response.decoded)}" if @options[:log_response] && response.try!(:decoded)
+      debug message
+    end
+
+    def exception(e, http=nil, options=nil)
       backtrace = e.backtrace.map { |l| "#{' ' * 2}#{l}" }.join("\n")
-      curl = "\n  #{to_curl(options, http)}" if options && http
+      curl = "\n  #{to_curl(http, options)}" if options && http
       error "#{e.class} #{e.message} #{curl}\n#{backtrace}\n\n"
     end
 
     private
 
-    def to_curl(options, http)
+    def to_curl(http, options)
       res = 'curl -i -X '
       res << options[:method].to_s.upcase
 
       res << " '#{http.params[:scheme]}://#{http.params[:host]}"
       res << ":#{http.params[:port]}" if http.params[:port]
       res << options[:path]
-      res << '?'
-      res << 'pretty'
       if options[:query].present?
-        res << '&'
+        res << '?'
         res << options[:query].is_a?(String) ? options[:query] : options[:query].to_query
+      elsif @options[:pretty]
+        res << '?'
       end
+      res << '&pretty' if @options[:pretty]
       res << "'"
 
-      res << " -d '#{pretty_json(options[:body])}'" if options[:body]
+      if options[:body]
+        if options[:path].include?('/_bulk')
+          binary_data = @options[:log_binary] ? options[:body] : '... data omitted ...'
+          res << " --data-binary '#{binary_data}'"
+        else
+          res << " -d '#{pretty_json(options[:body])}'"
+        end
+      end
       res
     end
 
     def pretty_json(string)
       return if string.blank?
+      return string unless @options[:pretty]
       JSON.pretty_generate(JSON.parse(string)).gsub("'", '\u0027')
     end
 
