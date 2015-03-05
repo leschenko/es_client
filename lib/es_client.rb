@@ -11,6 +11,7 @@ module EsClient
   module ActiveRecord
     autoload :Adapter, 'es_client/active_record/adapter'
     autoload :Glue, 'es_client/active_record/glue'
+    autoload :Shortcuts, 'es_client/active_record/shortcuts'
   end
 
   mattr_accessor :callbacks_enabled, :logger, :logger_options, :host, :http_client_options

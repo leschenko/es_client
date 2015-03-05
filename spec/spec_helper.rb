@@ -58,6 +58,7 @@ end
 
 class RspecUser < RspecActiveRecordBase
   include ::EsClient::ActiveRecord::Glue
+  include ::EsClient::ActiveRecord::Shortcuts
 
   def self.setup_index
     es_client.index.recreate
