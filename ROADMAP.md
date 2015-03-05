@@ -1,10 +1,10 @@
-- [x] Client
-- [x] Response
+- [x] HTTP transport
 - [x] Logger
 - [x] Index
-- [ ] Importing
+- [x] Importing
 - [ ] Search
-- [ ] ModelAdapter
+- [x] ActiveRecord adapter
+- [ ] Rake task for import
 - [ ] TireAdapter
   - [ ] settings
   - [ ] mapping
