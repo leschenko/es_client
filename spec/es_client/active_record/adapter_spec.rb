@@ -40,5 +40,10 @@ describe EsClient::ActiveRecord::Adapter do
       expect(RspecUser.es_client.index).to receive(:find).with('rspec_user', 1)
       RspecUser.es_client.find(1)
     end
+
+    it 'find multiple documents' do
+      expect(RspecUser.es_client.index).to receive(:search).with({query: {ids: {values: [1], type: 'rspec_user'}}, size: 1}, type: 'rspec_user')
+      RspecUser.es_client.find([1])
+    end
   end
 end
