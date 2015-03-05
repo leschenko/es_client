@@ -51,12 +51,21 @@ describe EsClient::Index do
     end
   end
 
-  describe 'put_mapping' do
+  describe 'mapping' do
     it 'update mapping' do
       index = EsClient::Index.new('test_index')
       index.recreate
       expect(index.put_mapping('product', {properties: {sku: {type: 'string'}}}).success?).to eq true
       expect(index.get_mapping).to eq({'product' => {'properties' => {'sku' => {'type' => 'string'}}}})
+    end
+  end
+
+  describe 'settings' do
+    it 'update settings' do
+      index = EsClient::Index.new('test_index')
+      index.recreate
+      expect(index.put_settings({refresh_interval: '2s'}).success?).to eq true
+      expect(index.get_settings['index']['refresh_interval']).to eq '2s'
     end
   end
 

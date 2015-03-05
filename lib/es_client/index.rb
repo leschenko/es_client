@@ -41,6 +41,10 @@ module EsClient
       EsClient.client.get("/#{name}/_settings").decoded[name]['settings']
     end
 
+    def put_settings(settings)
+      EsClient.client.put("/#{name}/_settings", body: settings.to_json)
+    end
+
     def get_mapping
       EsClient.client.get("/#{name}/_mapping").decoded[name]['mappings']
     end
