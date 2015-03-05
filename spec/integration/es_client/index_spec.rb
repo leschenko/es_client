@@ -60,7 +60,7 @@ describe EsClient::Index do
     end
   end
 
-  describe 'save_document' do
+  describe 'save document' do
     it 'save document' do
       index = EsClient::Index.new('test_index')
       index.recreate
@@ -68,7 +68,18 @@ describe EsClient::Index do
     end
   end
 
-  describe 'destroy_document' do
+  describe 'update document' do
+    it 'update document' do
+      index = EsClient::Index.new('test_index')
+      index.recreate
+      index.save_document('test', 1, {id: 1, name: 'test', description: 'text'})
+      index.update_document('test', 1, {name: 'test1'})
+      expect(index.find('test', 1)['name']).to eq 'test1'
+      expect(index.find('test', 1)['description']).to eq 'text'
+    end
+  end
+
+  describe 'destroy document' do
     it 'destroy document' do
       index = EsClient::Index.new('test_index')
       index.recreate

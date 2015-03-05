@@ -55,6 +55,10 @@ module EsClient
       EsClient.client.post("/#{name}/#{type}/#{id}", body: document.to_json)
     end
 
+    def update_document(type, id, document)
+      EsClient.client.post("/#{name}/#{type}/#{id}/_update", body: {doc: document}.to_json)
+    end
+
     def destroy_document(type, id)
       EsClient.client.delete("/#{name}/#{type}/#{id}")
     end
