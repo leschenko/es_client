@@ -18,4 +18,25 @@ describe EsClient::ActiveRecord::Glue do
       RspecUser.new(id: 1, name: 'bob').save
     end
   end
+
+  describe 'record es document' do
+    it 'return es document' do
+      expect(RspecUser.es_client).to receive(:find).with(1)
+      RspecUser.new(id: 1, name: 'bob').es_client_document
+    end
+
+    it 'fetch es document once' do
+      expect(RspecUser.es_client).to receive(:find).with(1).once
+      record = RspecUser.new(id: 1, name: 'bob')
+      record.es_client_document
+      record.es_client_document
+    end
+
+    it 'force fetch es document' do
+      expect(RspecUser.es_client).to receive(:find).with(1).twice
+      record = RspecUser.new(id: 1, name: 'bob')
+      record.es_client_document
+      record.es_client_document(true)
+    end
+  end
 end

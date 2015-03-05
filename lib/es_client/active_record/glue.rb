@@ -19,6 +19,11 @@ module EsClient
         es_client.destroy_document(id)
       end
 
+      def es_client_document(force=false)
+        return @es_client_document if !force && defined?(@es_client_document)
+        @es_client_document = es_client.find(id)
+      end
+
       def es_client_callbacks_enabled?
         EsClient.callbacks_enabled
       end
