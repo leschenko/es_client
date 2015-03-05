@@ -45,8 +45,12 @@ module EsClient
       EsClient.client.put("/#{name}/_mapping/#{type}", body: json)
     end
 
-    def store(type, document)
-      EsClient.client.post("/#{name}/#{type}/#{document[:id]}", body: document.to_json)
+    def save_document(type, id, document)
+      EsClient.client.post("/#{name}/#{type}/#{id}", body: document.to_json)
+    end
+
+    def destroy_document(type, id)
+      EsClient.client.delete("/#{name}/#{type}/#{id}")
     end
 
     def find(type, id)

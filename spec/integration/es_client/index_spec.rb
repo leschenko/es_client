@@ -60,11 +60,20 @@ describe EsClient::Index do
     end
   end
 
-  describe 'store' do
-    it 'store document' do
+  describe 'save_document' do
+    it 'save document' do
       index = EsClient::Index.new('test_index')
       index.recreate
-      expect(index.store('test', {}).success?).to eq true
+      expect(index.save_document('test', nil, {}).success?).to eq true
+    end
+  end
+
+  describe 'destroy_document' do
+    it 'destroy document' do
+      index = EsClient::Index.new('test_index')
+      index.recreate
+      index.save_document('test', 1, {id: 1, name: 'test'})
+      expect(index.destroy_document('test', 1).success?).to eq true
     end
   end
 
@@ -72,7 +81,7 @@ describe EsClient::Index do
     it 'find document' do
       index = EsClient::Index.new('test_index')
       index.recreate
-      index.store('test', {id: 1, name: 'test'})
+      index.save_document('test', 1, {id: 1, name: 'test'})
       expect(index.find('test', 1)['name']).to eq 'test'
     end
   end
@@ -88,7 +97,7 @@ describe EsClient::Index do
     it 'perform bulk update' do
       index = EsClient::Index.new('test_index')
       index.recreate
-      index.store('test', {id: 1, name: 'test'})
+      index.save_document('test', 1, {id: 1, name: 'test'})
       index.bulk(:update, 'test', [{id: 1, name: 'updated name'}])
       expect(index.find('test', 1)['name']).to eq 'updated name'
     end
@@ -103,7 +112,7 @@ describe EsClient::Index do
     it 'perform bulk delete' do
       index = EsClient::Index.new('test_index')
       index.recreate
-      index.store('test', {id: 1, name: 'test'})
+      index.save_document('test', 1, {id: 1, name: 'test'})
       index.bulk(:delete, 'test', [{id: 1}])
       expect(index.find('test', 1)).to be_nil
     end
