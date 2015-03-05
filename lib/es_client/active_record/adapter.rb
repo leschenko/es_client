@@ -33,6 +33,12 @@ module EsClient
         index.save_document(document_type, document.id, document.as_indexed_json)
       end
 
+      def update_document(document, additional_doc=nil)
+        doc = document.changes.map { |k, v| [k, v.last] }.to_h
+        doc.deep_merge!(additional_doc) if additional_doc
+        index.update_document(document_type, document.id, doc)
+      end
+
       def destroy_document(id)
         index.destroy_document(document_type, id)
       end

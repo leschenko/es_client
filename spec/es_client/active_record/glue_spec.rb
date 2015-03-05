@@ -19,6 +19,20 @@ describe EsClient::ActiveRecord::Glue do
     end
   end
 
+  describe 'update' do
+    it 'update es document' do
+      expect(RspecUser.es_client).to receive(:update_document)
+      RspecUser.new(id: 1, name: 'bob').es_client_update
+    end
+
+    it 'do not update new record document' do
+      expect(RspecUser.es_client).not_to receive(:update_document)
+      record = RspecUser.new(id: 1, name: 'bob')
+      allow(record).to receive(:new_record?).and_return(true)
+      record.es_client_update
+    end
+  end
+
   describe 'record es document' do
     it 'return es document' do
       expect(RspecUser.es_client).to receive(:find).with(1)
