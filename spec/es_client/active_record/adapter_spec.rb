@@ -9,6 +9,7 @@ describe EsClient::ActiveRecord::Adapter do
     it 'allow to define custom index name' do
       RspecUser.es_client.index_name('custom_index_name')
       expect(RspecUser.es_client.index_name).to eq 'custom_index_name'
+      RspecUser.es_client.instance_variable_set(:@index_name, nil)
     end
   end
 
@@ -20,6 +21,7 @@ describe EsClient::ActiveRecord::Adapter do
     it 'allow to define custom document type' do
       RspecUser.es_client.document_type('custom_document_type')
       expect(RspecUser.es_client.document_type).to eq 'custom_document_type'
+      RspecUser.es_client.instance_variable_set(:@document_type, nil)
     end
   end
 
@@ -33,8 +35,10 @@ describe EsClient::ActiveRecord::Adapter do
     RspecUser.es_client.destroy_document(1)
   end
 
-  it 'find document' do
-    expect(RspecUser.es_client.index).to receive(:find).with('rspec_user', 1)
-    RspecUser.es_client.find(1)
+  describe 'find' do
+    it 'find document' do
+      expect(RspecUser.es_client.index).to receive(:find).with('rspec_user', 1)
+      RspecUser.es_client.find(1)
+    end
   end
 end
