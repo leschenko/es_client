@@ -31,6 +31,12 @@ module EsClient
       EsClient.client.post("/#{name}/_refresh")
     end
 
+    def search(query, options={})
+      http_options = options.slice(:query, :headers)
+      http_options[:body] = query.to_json
+      EsClient.client.get("/#{name}/#{options[:type]}/_search", http_options)
+    end
+
     def get_settings
       EsClient.client.get("/#{name}/_settings").decoded[name]['settings']
     end

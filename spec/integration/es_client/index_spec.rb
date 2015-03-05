@@ -123,4 +123,14 @@ describe EsClient::Index do
     index.recreate
     expect(index.refresh.success?).to eq true
   end
+
+  describe 'search' do
+    it 'perform query' do
+      index = EsClient::Index.new('test_index')
+      index.recreate
+      index.save_document('test', 1, {id: 1, name: 'test'})
+      index.refresh
+      expect(index.search({query: {ids: {values: [1]}}}, type: 'test').decoded['hits']['hits'].length).to eq 1
+    end
+  end
 end
