@@ -45,15 +45,7 @@ module EsClient
 
       def find(id)
         if id.is_a?(Array)
-          query = {
-            query: {
-              ids: {
-                values: id,
-                type: document_type
-              }
-            },
-            size: id.length
-          }
+          query = {query: {ids: {values: id, type: document_type}}, size: id.length}
           index.search(query, type: document_type)
         else
           index.find(document_type, id)
