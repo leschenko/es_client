@@ -36,6 +36,10 @@ module EsClient
       def destroy_document(id)
         index.destroy_document(document_type, id)
       end
+
+      def find(id)
+        index.find(document_type, id)
+      end
     end
   end
 end

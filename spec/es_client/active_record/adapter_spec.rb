@@ -22,4 +22,19 @@ describe EsClient::ActiveRecord::Adapter do
       expect(RspecUser.es_client.document_type).to eq 'custom_document_type'
     end
   end
+
+  it 'save document' do
+    expect(RspecUser.es_client.index).to receive(:save_document).with('rspec_user', 1, {id: 1, name: 'bob'})
+    RspecUser.es_client.save_document(RspecUser.new(id: 1, name: 'bob'))
+  end
+
+  it 'destroy document' do
+    expect(RspecUser.es_client.index).to receive(:destroy_document).with('rspec_user', 1)
+    RspecUser.es_client.destroy_document(1)
+  end
+
+  it 'find document' do
+    expect(RspecUser.es_client.index).to receive(:find).with('rspec_user', 1)
+    RspecUser.es_client.find(1)
+  end
 end
