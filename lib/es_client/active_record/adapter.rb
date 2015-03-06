@@ -28,14 +28,14 @@ module EsClient
         end
       end
 
-      def save_document(document)
-        index.save_document(document_type, document.id, document.as_indexed_json)
+      def save_document(record)
+        index.save_document(document_type, record.id, record.as_indexed_json)
       end
 
-      def update_document(document, additional_doc=nil)
-        doc = document.changes.map { |k, v| [k, v.last] }.to_h
+      def update_document(record, additional_doc=nil)
+        doc = record.changes.map { |k, v| [k, v.last] }.to_h
         doc.deep_merge!(additional_doc) if additional_doc
-        index.update_document(document_type, document.id, doc)
+        index.update_document(document_type, record.id, doc)
       end
 
       def destroy_document(id)
@@ -49,6 +49,10 @@ module EsClient
         else
           index.find(document_type, id)
         end
+      end
+
+      def import(records)
+        index.bulk :index, document_type, records.map(&:as_indexed_json)
       end
     end
   end

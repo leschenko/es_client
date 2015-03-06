@@ -55,4 +55,11 @@ describe EsClient::ActiveRecord::Adapter do
       RspecUser.es_client.find([1])
     end
   end
+
+  describe 'import' do
+    it 'import batch of records' do
+      expect(RspecUser.es_client.index).to receive(:bulk).with(:index, 'rspec_user', [{id: 1}])
+      RspecUser.es_client.import([RspecUser.new(id: 1)])
+    end
+  end
 end
