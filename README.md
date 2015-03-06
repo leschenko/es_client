@@ -51,6 +51,14 @@ index.search(query: {query_string: {query: 'table OR chair'}}).decoded
 
 ## With ActiveRecord model:
 
+Add initializer with base config options `config/initializers/es_client.rb`
+```ruby
+EsClient.setup do |config|
+  config.log_path = Rails.root.join('log', 'elasticsearch.log')
+  config.index_prefix = 'my_app'
+end
+```
+
 Include EsClient modules:
 ```ruby
 class User
