@@ -25,7 +25,7 @@ Or install it yourself as:
 
 Create index:
 ```ruby
-index = EsClient::Index.new('products', mappings: {product: {properties: {sku: {type: 'string'}}}}, settings: {number_of_shards: 1})
+index = EsClient::Index.new('products')
 index.create
 ```
 
