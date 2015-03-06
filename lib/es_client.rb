@@ -29,6 +29,16 @@ module EsClient
     @client ||= ::EsClient::Client.new(host, http_client_options)
   end
 
+  def self.with_log_level(level)
+    old_level = logger.level
+    begin
+      self.logger.level = level.is_a?(Integer) ? level : logger.class.const_get(level.to_s.upcase)
+      yield
+    ensure
+      self.logger.level = old_level
+    end
+  end
+
   def self.setup
     yield self
   end

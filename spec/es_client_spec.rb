@@ -23,4 +23,10 @@ describe EsClient do
       expect(EsClient::Index.new('test').name).to eq 'prefix_test'
     end
   end
+
+  it 'execute block with log level' do
+    EsClient.with_log_level :error do
+      expect(EsClient.logger.level).to eq 3
+    end
+  end
 end
