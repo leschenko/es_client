@@ -1,7 +1,6 @@
 module EsClient
   module ActiveRecord
     class Adapter
-
       attr_accessor :index, :index_name, :document_type
       attr_writer :index, :index_name, :document_type
 

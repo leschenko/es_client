@@ -1,6 +1,5 @@
 module EsClient
   class Logger < ::Logger
-
     def initialize(path, options)
       super(path)
       @options = options
@@ -54,6 +53,5 @@ module EsClient
       return string unless @options[:pretty]
       JSON.pretty_generate(JSON.parse(string)).gsub("'", '\u0027')
     end
-
   end
 end

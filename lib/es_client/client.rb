@@ -1,6 +1,5 @@
 module EsClient
   class Client
-
     RETRY_TIMES = 1
 
     def initialize(host, options)
@@ -60,7 +59,6 @@ module EsClient
     end
 
     class Error < StandardError
-
       attr_reader :transport
 
       def initialize(excon_error, transport)
@@ -68,7 +66,6 @@ module EsClient
         super("#{excon_error.message} (#{excon_error.class})")
         set_backtrace(excon_error.backtrace)
       end
-
     end
   end
 end

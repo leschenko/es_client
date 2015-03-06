@@ -1,5 +1,4 @@
 module EsClient
-
   class Response
     attr_reader :body, :code, :headers
 
@@ -22,5 +21,4 @@ module EsClient
       @decoded ||= JSON.parse(@body)
     end
   end
-
 end
