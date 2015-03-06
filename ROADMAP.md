@@ -2,9 +2,8 @@
 - [x] Logger
 - [x] Index
 - [x] Importing
-- [ ] Search
+- [x] Search
 - [x] ActiveRecord adapter
-- [ ] Rake task for import
 - [ ] TireAdapter
   - [ ] settings
   - [ ] mapping
