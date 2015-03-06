@@ -4,6 +4,10 @@ require 'byebug'
 require 'active_model'
 require 'ruby-progressbar'
 
+RSpec.configure do |c|
+  c.order = :rand
+end
+
 EsClient.setup do |config|
   config.log_path = File.expand_path('../../log/elasticsearch.log', __FILE__)
   config.host = 'http://localhost:9201'
