@@ -62,4 +62,38 @@ describe EsClient::ActiveRecord::Adapter do
       RspecUser.es_client.import([RspecUser.new(id: 1)])
     end
   end
+
+  describe 'mapping' do
+    it 'fetch mapping' do
+      expect(RspecUser.es_client.index).to receive(:get_mapping)
+      RspecUser.es_client.mapping
+    end
+
+    it 'set mapping' do
+      RspecUser.es_client.index.options[:mappings] = {}
+      RspecUser.es_client.mapping(test: {properties: {notes: {type: 'string'}}})
+      expect(RspecUser.es_client.index.options[:mappings]).to include(test: {properties: {notes: {type: 'string'}}})
+    end
+
+    it 'set append mapping' do
+      RspecUser.es_client.index.options[:mappings] = {}
+      RspecUser.es_client.mapping(test: {properties: {prop1: {type: 'string'}}})
+      RspecUser.es_client.mapping(test: {properties: {prop2: {type: 'string'}}})
+      expect(RspecUser.es_client.index.options[:mappings][:test][:properties]).to include(prop1: {type: 'string'})
+      expect(RspecUser.es_client.index.options[:mappings][:test][:properties]).to include(prop2: {type: 'string'})
+    end
+  end
+
+  describe 'settings' do
+    it 'fetch settings' do
+      expect(RspecUser.es_client.index).to receive(:get_settings)
+      RspecUser.es_client.settings
+    end
+
+    it 'set settings' do
+      RspecUser.es_client.index.options[:settings] = {}
+      RspecUser.es_client.settings(refresh_interval: '3s')
+      expect(RspecUser.es_client.index.options[:settings]).to include(refresh_interval: '3s')
+    end
+  end
 end

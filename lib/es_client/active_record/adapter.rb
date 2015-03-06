@@ -1,8 +1,7 @@
 module EsClient
   module ActiveRecord
     class Adapter
-      attr_accessor :index, :index_name, :document_type
-      attr_writer :index, :index_name, :document_type
+      attr_reader :index, :index_name, :document_type, :mapping, :settings
 
       def initialize(model)
         @model = model
@@ -25,6 +24,24 @@ module EsClient
           @document_type = value
         else
           @document_type || @model.model_name.singular
+        end
+      end
+
+      def mapping(value=nil)
+        if value
+          @index.options[:mappings] ||= {}
+          @index.options[:mappings].deep_merge!(value)
+        else
+          index.get_mapping
+        end
+      end
+
+      def settings(value=nil)
+        if value
+          @index.options[:settings] ||= {}
+          @index.options[:settings].deep_merge!(value)
+        else
+          index.get_settings
         end
       end
 

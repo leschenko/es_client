@@ -1,6 +1,6 @@
 module EsClient
   class Index
-    attr_reader :name, :settings
+    attr_reader :name, :options
 
     def initialize(name, options={})
       @name = name
