@@ -25,8 +25,8 @@ module EsClient
       res = 'curl -i -X '
       res << options[:method].to_s.upcase
 
-      res << " '#{http.params[:scheme]}://#{http.params[:host]}"
-      res << ":#{http.params[:port]}" if http.params[:port]
+      res << " '#{http.data[:scheme]}://#{http.data[:host]}"
+      res << ":#{http.data[:port]}" if http.data[:port]
       res << options[:path]
       if options[:query].present?
         res << '?'
