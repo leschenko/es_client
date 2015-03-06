@@ -100,7 +100,7 @@ User.es_client_reindex_with_progress
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/es_client/fork )
+1. Fork it ( https://github.com/leschenko/es_client/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
