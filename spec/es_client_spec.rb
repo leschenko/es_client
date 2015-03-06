@@ -24,9 +24,17 @@ describe EsClient do
     end
   end
 
-  it 'execute block with log level' do
-    EsClient.with_log_level :error do
-      expect(EsClient.logger.level).to eq 3
+  describe '#with_log_level' do
+    it 'execute block with integer log level' do
+      EsClient.with_log_level 2 do
+        expect(EsClient.logger.level).to eq 2
+      end
+    end
+
+    it 'execute block with symbol log level' do
+      EsClient.with_log_level :error do
+        expect(EsClient.logger.level).to eq 3
+      end
     end
   end
 end
