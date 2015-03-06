@@ -62,7 +62,7 @@ describe EsClient::ActiveRecord::Glue do
 
     it 'reindex current scope with progress' do
       expect(RspecUser.es_client).to receive(:import).twice.with(instance_of(Array))
-      RspecUser.es_client_reindex_with_progress
+      RspecUser.es_client_reindex_with_progress(batch_size: 1)
     end
   end
 end
