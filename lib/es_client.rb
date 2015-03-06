@@ -14,7 +14,7 @@ module EsClient
     autoload :Shortcuts, 'es_client/active_record/shortcuts'
   end
 
-  mattr_accessor :callbacks_enabled, :logger, :logger_options, :host, :http_client_options
+  mattr_accessor :callbacks_enabled, :logger, :logger_options, :host, :http_client_options, :index_prefix
 
   @@host = 'http://localhost:9200'
   @@http_client_options = {persistent: true}

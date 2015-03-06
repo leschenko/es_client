@@ -3,8 +3,13 @@ module EsClient
     attr_reader :name, :options
 
     def initialize(name, options={})
-      @name = name
+      @name = build_name(name)
       @options = options
+    end
+
+    def build_name(name)
+      return name unless EsClient.index_prefix
+      "#{EsClient.index_prefix}_#{name}"
     end
 
     def exists?

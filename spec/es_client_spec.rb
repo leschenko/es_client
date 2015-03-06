@@ -12,4 +12,15 @@ describe EsClient do
   it 'http connection persistent by default' do
     expect(EsClient.client.http.data[:persistent]).to eq true
   end
+
+  describe 'index_prefix' do
+    after do
+      EsClient.index_prefix = nil
+    end
+
+    it 'set index name prefix' do
+      EsClient.index_prefix = 'prefix'
+      expect(EsClient::Index.new('test').name).to eq 'prefix_test'
+    end
+  end
 end
