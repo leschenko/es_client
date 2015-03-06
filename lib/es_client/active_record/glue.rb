@@ -36,6 +36,37 @@ module EsClient
       def as_indexed_json
         as_json
       end
+
+      module ClassMethods
+        def es_client_reindex(options={})
+          find_in_batches(options) do |batch|
+            es_client.import(batch)
+          end
+        end
+
+        def es_client_reindex_with_progress(options={})
+          find_in_batches_with_progress(options) do |batch|
+            es_client.import(batch)
+          end
+        end
+
+        def find_in_batches_with_progress(options = {})
+          unless defined? ProgressBar
+            warn "Install 'ruby-progressbar' gem to use '#{__method__}' method"
+            return
+          end
+          options[:batch_size] ||= 1000
+          total = (count / options[:batch_size].to_f).ceil
+          title = options.delete(:name) || "#{name} batch_size:#{options[:batch_size]}"
+          bar = ProgressBar.create(title: title, total: total, format: '%c of %C - %a %e |%b>>%i| %p%% %t')
+          bar.progress_mark = '='
+          find_in_batches(options) do |r|
+            yield r
+            bar.increment
+          end
+          bar.finish
+        end unless respond_to?(:find_in_batches_with_progress)
+      end
     end
   end
 end

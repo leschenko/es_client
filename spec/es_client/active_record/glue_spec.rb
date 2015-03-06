@@ -53,4 +53,16 @@ describe EsClient::ActiveRecord::Glue do
       record.es_client_document(true)
     end
   end
+
+  describe 'reindex' do
+    it 'reindex current scope' do
+      expect(RspecUser.es_client).to receive(:import).twice.with(instance_of(Array))
+      RspecUser.es_client_reindex
+    end
+
+    it 'reindex current scope with progress' do
+      expect(RspecUser.es_client).to receive(:import).twice.with(instance_of(Array))
+      RspecUser.es_client_reindex_with_progress
+    end
+  end
 end

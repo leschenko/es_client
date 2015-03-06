@@ -2,6 +2,7 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'es_client'
 require 'byebug'
 require 'active_model'
+require 'ruby-progressbar'
 
 EsClient.setup do |config|
   config.log_path = File.expand_path('../../log/elasticsearch.log', __FILE__)
@@ -53,6 +54,17 @@ class RspecActiveRecordBase
 
   def destroyed?
     !!@destroyed
+  end
+
+  def self.find_in_batches(options={})
+    i = 0
+    2.times do
+      yield [new(id: i += 1), new(id: i += 1)]
+    end
+  end
+
+  def self.count
+    4
   end
 end
 
