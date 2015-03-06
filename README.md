@@ -1,6 +1,8 @@
 # EsClient
 
-This elasticsearch client is just all you need to search and index your data with persistent http connection
+This elasticsearch client is just all you need to index and search your data with persistent http connection.
+It don't tend to wrap [elasticsearch](http://elasticsearch.org) dsl into ruby style dsl.
+[Excon](https://github.com/excon/excon) used for http staff.
 
 ## Installation
 
@@ -20,7 +22,31 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Create index:
+```ruby
+  index = EsClient::Index.new('products', mappings: {product: {properties: {sku: {type: 'string'}}}}, settings: {number_of_shards: 1})
+  index.create
+```
+
+Add document to index:
+```ruby
+  index.save_document('product', 1, {id: 1, name: 'Table', sku: '123'})
+```
+
+Fetch document:
+```ruby
+  index.find('product', 1)
+```
+
+Add few document with one query i.e. bulk index:
+```ruby
+  index.bulk(:index, 'product', [{id: 2, name: 'Chair'}, {id: 2, name: 'Lamp'}])
+```
+
+And, of course, search:
+```ruby
+  index.search(query: {query_string: {query: 'table OR chair'}}).decoded
+```
 
 ## Contributing
 
