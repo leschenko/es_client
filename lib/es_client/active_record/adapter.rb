@@ -71,6 +71,11 @@ module EsClient
       def import(records)
         index.bulk :index, document_type, records.map(&:as_indexed_json)
       end
+
+      def search(query, options={})
+        options[:type] = document_type
+        index.search(query, options)
+      end
     end
   end
 end

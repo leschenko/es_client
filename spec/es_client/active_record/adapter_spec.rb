@@ -96,4 +96,11 @@ describe EsClient::ActiveRecord::Adapter do
       expect(RspecUser.es_client.index.options[:settings]).to include(refresh_interval: '3s')
     end
   end
+
+  describe 'search' do
+    it 'perform search query' do
+      expect(RspecUser.es_client.index).to receive(:search).with({query: {query_string: {query: 'test'}}}, type: 'rspec_user')
+      RspecUser.es_client.search(query: {query_string: {query: 'test'}})
+    end
+  end
 end
