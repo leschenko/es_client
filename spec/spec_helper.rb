@@ -10,7 +10,7 @@ end
 
 EsClient.setup do |config|
   config.log_path = File.expand_path('../../log/elasticsearch.log', __FILE__)
-  config.host = 'http://localhost:9201'
+  config.host = "http://localhost:#{ENV['ES_PORT'] || 9200}"
 end
 
 class RspecActiveRecordBase
