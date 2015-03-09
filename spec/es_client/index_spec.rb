@@ -18,7 +18,7 @@ describe EsClient::Index do
   describe 'create' do
     it 'create index' do
       index = EsClient::Index.new('test_index')
-      allow(EsClient.client).to receive(:post).with('/test_index', {}).and_return(double(:response, success?: true))
+      allow(EsClient.client).to receive(:post).with('/test_index', {expects: [200, 201]}).and_return(double(:response, success?: true))
       expect(index.create.success?).to eq true
     end
   end
@@ -26,7 +26,8 @@ describe EsClient::Index do
   describe 'delete' do
     it 'create index' do
       index = EsClient::Index.new('test_index')
-      allow(EsClient.client).to receive(:delete).with('/test_index').and_return(double(:response, success?: true))
+      allow(EsClient.client).to receive(:delete!).with('/test_index').and_return(double(:response, success?: true))
+      expect(index).to receive(:exists?).and_return(true)
       expect(index.delete.success?).to eq true
     end
   end

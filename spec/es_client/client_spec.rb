@@ -41,8 +41,7 @@ describe EsClient::Client do
       it 'bang method raise exception' do
         Excon.stub({}, {body: '{}', status: 400})
         transport = EsClient::Client.new('http://example.com', {})
-        # expect { transport.get!('/example', mock: true) }.to raise_error
-        transport.get!('/example', mock: true)
+        expect { transport.get!('/example', mock: true) }.to raise_error
       end
 
       it 'reconnect on failed request' do
