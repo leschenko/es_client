@@ -2,29 +2,26 @@ module EsClient
   class Client
     RETRY_TIMES = 1
 
+    HTTP_VERBS = %i(get post put delete head)
+
+    SUCCESS_HTTP_CODES = [200, 201]
+
     def initialize(host, options)
       @host = host
       @options = options
     end
 
-    def get(path, options={})
-      request options.merge(method: :get, path: path)
-    end
+    HTTP_VERBS.each do |method|
+      class_eval <<-DEF, __FILE__, __LINE__ + 1
+        def #{method}(path, options={})
+          request options.merge(method: :#{method}, path: path)
+        end
 
-    def post(path, options={})
-      request options.merge(method: :post, path: path)
-    end
-
-    def put(path, options={})
-      request options.merge(method: :put, path: path)
-    end
-
-    def delete(path, options={})
-      request options.merge(method: :delete, path: path)
-    end
-
-    def head(path, options={})
-      request options.merge(method: :head, path: path)
+        def #{method}!(path, options={})
+          options[:expects] = SUCCESS_HTTP_CODES
+          #{method}(path, options)
+        end
+      DEF
     end
 
     def request(options)
@@ -34,13 +31,14 @@ module EsClient
         response = ::EsClient::Response.new(raw_response.body, raw_response.status, raw_response.headers)
         EsClient.logger.request(http, response, options) if EsClient.logger.try!(:debug?)
         response
-      rescue Excon::Errors::SocketError => e
+      rescue Excon::Errors::SocketError, Excon::Errors::BadRequest => e
         if retry_times >= RETRY_TIMES
           exception = ::EsClient::Client::Error.new(e, self)
           EsClient.logger.exception(exception, http, options) if EsClient.logger
           raise exception
         end
         retry_times += 1
+        EsClient.logger.info "[#{retry_times}] Try reconnect to #{@host}"
         reconnect!
         retry
       end
@@ -59,12 +57,13 @@ module EsClient
     end
 
     class Error < StandardError
-      attr_reader :transport
+      attr_reader :transport, :original_exception
 
-      def initialize(excon_error, transport)
+      def initialize(original_exception, transport)
         @transport = transport
-        super("#{excon_error.message} (#{excon_error.class})")
-        set_backtrace(excon_error.backtrace)
+        @original_exception = original_exception
+        super("#{original_exception.message} (#{original_exception.class})")
+        set_backtrace(original_exception.backtrace)
       end
     end
   end

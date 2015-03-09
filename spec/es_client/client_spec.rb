@@ -32,6 +32,19 @@ describe EsClient::Client do
     end
 
     context 'failure' do
+      it 'non bang method do not raise exception' do
+        Excon.stub({}, {body: '{}', status: 400})
+        transport = EsClient::Client.new('http://example.com', {})
+        expect { transport.get('/example', mock: true) }.not_to raise_error
+      end
+
+      it 'bang method raise exception' do
+        Excon.stub({}, {body: '{}', status: 400})
+        transport = EsClient::Client.new('http://example.com', {})
+        # expect { transport.get!('/example', mock: true) }.to raise_error
+        transport.get!('/example', mock: true)
+      end
+
       it 'reconnect on failed request' do
         transport = EsClient::Client.new('http://example.com', {})
         allow(transport.http).to receive(:request) { raise Excon::Errors::SocketError.new(StandardError.new) }
