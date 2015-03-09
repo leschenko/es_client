@@ -49,8 +49,7 @@ And, of course, search:
 index.search(query: {query_string: {query: 'table OR chair'}}).decoded
 ```
 
-### Configuration options, i.e. `config/initializers/es_client.rb`
-
+### Configuration options
 ```ruby
 EsClient.setup do |config|
   # path to log file
