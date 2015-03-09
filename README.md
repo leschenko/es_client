@@ -49,15 +49,33 @@ And, of course, search:
 index.search(query: {query_string: {query: 'table OR chair'}}).decoded
 ```
 
-## With ActiveRecord model:
-
-Add initializer with base config options `config/initializers/es_client.rb`
+Configuration options, i.e. `config/initializers/es_client.rb`
 ```ruby
 EsClient.setup do |config|
+  # path to log file
   config.log_path = Rails.root.join('log', 'elasticsearch.log')
-  config.index_prefix = 'my_app'
+
+  # log level (successful requests logged in debug)
+  # config.logger.level = ::Logger::Severity::INFO unless Rails.env.development?
+
+  # log options, should be set to false in production for better performance
+  #   `log_binary` - log binary data in bulk requests
+  #   `log_response` - log response json, can be disabled in production
+  #   `pretty` - pretty generate json in logs
+  # config.logger_options = {log_binary: true, log_response: true, pretty: true}
+
+  # application wide index prefix
+  config.index_prefix = 'my_app_name_here'
+
+  # enable indexing callbacks
+  # config.callbacks_enabled = true
+
+  # options passed to Excon initializer
+  # config.http_client_options = {persistent: true}
 end
 ```
+
+## With ActiveRecord model:
 
 Include EsClient modules:
 ```ruby
