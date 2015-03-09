@@ -32,22 +32,21 @@ describe EsClient::Index do
 
     it 'create index error' do
       index = EsClient::Index.new('test_index')
-      index.create
-      expect(index.create.success?).to eq false
+      expect { index.create }.to raise_exception(EsClient::Client::Error)
     end
   end
 
   describe 'delete' do
     it 'delete index' do
       index = EsClient::Index.new('test_index')
-      index.create
+      index.recreate
       expect(index.delete.success?).to eq true
     end
 
     it 'delete index error' do
       index = EsClient::Index.new('test_index')
       index.delete
-      expect(index.delete.success?).to eq false
+      expect(index.delete).to be_nil
     end
   end
 

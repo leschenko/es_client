@@ -23,11 +23,12 @@ module EsClient
 
     def create
       request_options = @options.present? ? {body: @options.to_json} : {}
-      EsClient.client.post("/#{name}", request_options)
+      EsClient.client.post!("/#{name}", request_options)
     end
 
     def delete
-      EsClient.client.delete("/#{name}")
+      return unless exists?
+      EsClient.client.delete!("/#{name}")
     end
 
     def refresh
