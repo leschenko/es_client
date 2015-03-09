@@ -31,16 +31,18 @@ module EsClient
         response = ::EsClient::Response.new(raw_response.body, raw_response.status, raw_response.headers)
         EsClient.logger.request(http, response, options) if EsClient.logger.try!(:debug?)
         response
-      rescue Excon::Errors::SocketError, Excon::Errors::BadRequest => e
+      rescue Excon::Errors::SocketError => e
         if retry_times >= RETRY_TIMES
-          exception = ::EsClient::Client::Error.new(e, self)
-          EsClient.logger.exception(exception, http, options) if EsClient.logger
-          raise exception
+          EsClient.logger.exception(e, http, options) if EsClient.logger
+          raise
         end
         retry_times += 1
         EsClient.logger.info "[#{retry_times}] Try reconnect to #{@host}"
         reconnect!
         retry
+      rescue Excon::Errors::BadRequest => e
+        EsClient.logger.exception(e, http, options) if EsClient.logger
+        raise
       end
     end
 
@@ -54,17 +56,6 @@ module EsClient
 
     def log(message, level=:info)
       EsClient.logger.try!(level, message)
-    end
-
-    class Error < StandardError
-      attr_reader :transport, :original_exception
-
-      def initialize(original_exception, transport)
-        @transport = transport
-        @original_exception = original_exception
-        super("#{original_exception.message} (#{original_exception.class})")
-        set_backtrace(original_exception.backtrace)
-      end
     end
   end
 end

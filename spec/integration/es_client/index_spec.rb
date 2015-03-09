@@ -33,7 +33,7 @@ describe EsClient::Index do
     it 'create index error' do
       index = EsClient::Index.new('test_index')
       index.recreate
-      expect { index.create }.to raise_exception(EsClient::Client::Error)
+      expect { index.create }.to raise_exception(Excon::Errors::BadRequest)
     end
   end
 
