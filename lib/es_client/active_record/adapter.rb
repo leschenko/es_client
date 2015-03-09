@@ -29,8 +29,8 @@ module EsClient
 
       def mapping(value=nil)
         if value
-          @index.options[:mappings] ||= {}
-          @index.options[:mappings].deep_merge!(value)
+          index.options[:mappings] ||= {}
+          index.options[:mappings].deep_merge!(value)
         else
           index.get_mapping
         end
@@ -38,8 +38,8 @@ module EsClient
 
       def settings(value=nil)
         if value
-          @index.options[:settings] ||= {}
-          @index.options[:settings].deep_merge!(value)
+          index.options[:settings] ||= {}
+          index.options[:settings].deep_merge!(value)
         else
           index.get_settings
         end
