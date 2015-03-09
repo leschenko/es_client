@@ -6,14 +6,16 @@ module EsClient
     end
 
     def request(http, response, options)
-      return unless debug?
+      log_level = response.success? ? :debug : :warn
+      return unless send("#{log_level}?")
       took = response.try!(:decoded).try!(:[], 'took') ? response.decoded['took'] : 'N/A'
       message = "[#{response.code}](#{took} msec) #{to_curl(http, options)}"
       message << "\n#{JSON.pretty_generate(response.decoded)}" if @options[:log_response] && response.try!(:decoded)
-      debug message
+      send log_level, message
     end
 
     def exception(e, http=nil, options=nil)
+      return unless error?
       backtrace = e.backtrace.map { |l| "#{' ' * 2}#{l}" }.join("\n")
       curl = "\n  #{to_curl(http, options)}" if options && http
       error "#{e.class} #{e.message} #{curl}\n#{backtrace}\n\n"
