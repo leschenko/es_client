@@ -17,8 +17,8 @@ module EsClient
     def exception(e, http=nil, options=nil)
       return unless error?
       backtrace = e.backtrace.map { |l| "#{' ' * 2}#{l}" }.join("\n")
-      curl = "\n  #{to_curl(http, options)}" if options && http
-      error "#{e.class} #{e.message} #{curl}\n#{backtrace}\n\n"
+      curl = "#{to_curl(http, options)}" if options && http
+      error "#{e.class} #{e.message}#{curl}\n#{options[:response]}\n#{backtrace}\n\n"
     end
 
     private

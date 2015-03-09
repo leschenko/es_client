@@ -41,7 +41,7 @@ module EsClient
         reconnect!
         retry
       rescue Excon::Errors::BadRequest => e
-        EsClient.logger.exception(e, http, options) if EsClient.logger
+        EsClient.logger.exception(e, http, options.merge(response: e.response.body)) if EsClient.logger
         raise
       end
     end
