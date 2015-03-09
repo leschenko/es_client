@@ -1,5 +1,8 @@
 # EsClient
 
+[![Build Status](https://travis-ci.org/leschenko/es_client.png?branch=master)](https://travis-ci.org/leschenko/es_client)
+[![Dependency Status](https://gemnasium.com/leschenko/es_client.png)](https://gemnasium.com/leschenko/es_client)
+
 This elasticsearch client is just all you need to index and search your data with persistent http connection.
 It don't tend to wrap [elasticsearch](http://elasticsearch.org) dsl into ruby style dsl.
 [Excon](https://github.com/excon/excon) used for http staff.
