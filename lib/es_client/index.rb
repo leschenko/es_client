@@ -82,6 +82,7 @@ module EsClient
           when :index
             payload << document
           when :update
+            document.delete(:id)
             document_for_update = {doc: document}
             document_for_update.update(document[:bulk_options]) if document[:bulk_options]
             payload << document_for_update
