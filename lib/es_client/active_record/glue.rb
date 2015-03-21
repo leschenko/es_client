@@ -61,7 +61,7 @@ module EsClient
             return
           end
           options[:batch_size] ||= 1000
-          total = (count / options[:batch_size].to_f).ceil
+          total = (count / options[:batch_size].to_f).ceil.succ
           title = options.delete(:name) || "#{name} batch_size:#{options[:batch_size]}"
           bar = ProgressBar.create(title: title, total: total, format: '%c of %C - %a %e |%b>>%i| %p%% %t')
           bar.progress_mark = '='
