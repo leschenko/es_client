@@ -29,6 +29,10 @@ module EsClient
     @client ||= ::EsClient::Client.new(host, http_client_options)
   end
 
+  def self.setup
+    yield self
+  end
+
   def self.with_log_level(level)
     old_level = logger.level
     begin
@@ -39,7 +43,13 @@ module EsClient
     end
   end
 
-  def self.setup
-    yield self
+  def self.without_callbacks
+    old_level = callbacks_enabled
+    begin
+      self.callbacks_enabled = false
+      yield
+    ensure
+      self.callbacks_enabled = old_level
+    end
   end
 end

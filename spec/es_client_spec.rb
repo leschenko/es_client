@@ -37,4 +37,12 @@ describe EsClient do
       end
     end
   end
+
+  describe '#without_callbacks' do
+    it 'execute block without callbacks' do
+      EsClient.without_callbacks do
+        expect(EsClient.callbacks_enabled).to be false
+      end
+    end
+  end
 end
