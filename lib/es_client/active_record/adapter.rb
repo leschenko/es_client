@@ -55,6 +55,10 @@ module EsClient
         index.update_document(document_type, record.id, doc)
       end
 
+      def update_fields(record, doc)
+        index.update_document(document_type, record.id, doc)
+      end
+
       def destroy_document(id)
         index.destroy_document(document_type, id)
       end

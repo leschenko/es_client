@@ -39,6 +39,14 @@ describe EsClient::ActiveRecord::Adapter do
     end
   end
 
+  describe 'update document fields' do
+    it 'update document fields' do
+      expect(RspecUser.es_client.index).to receive(:update_document).with('rspec_user', 1, {name: 'arnold'})
+      record = RspecUser.new(id: 1, name: 'bob')
+      RspecUser.es_client.update_fields(record, {name: 'arnold'})
+    end
+  end
+
   it 'destroy document' do
     expect(RspecUser.es_client.index).to receive(:destroy_document).with('rspec_user', 1)
     RspecUser.es_client.destroy_document(1)

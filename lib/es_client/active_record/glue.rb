@@ -19,6 +19,11 @@ module EsClient
         es_client.update_document(self, additional_doc)
       end
 
+      def es_client_update_fields(doc)
+        return if new_record?
+        es_client.update_fields(self, doc)
+      end
+
       def es_client_destroy
         return if new_record?
         es_client.destroy_document(id)

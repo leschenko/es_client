@@ -25,11 +25,25 @@ describe EsClient::ActiveRecord::Glue do
       RspecUser.new(id: 1, name: 'bob').es_client_update
     end
 
-    it 'do not update new record document' do
+    it 'do not update new record' do
       expect(RspecUser.es_client).not_to receive(:update_document)
       record = RspecUser.new(id: 1, name: 'bob')
       allow(record).to receive(:new_record?).and_return(true)
       record.es_client_update
+    end
+  end
+
+  describe 'update fields' do
+    it 'update fields in es document' do
+      expect(RspecUser.es_client).to receive(:update_fields).with(instance_of(RspecUser), {name: 'Bob'})
+      RspecUser.new(id: 1).es_client_update_fields(name: 'Bob')
+    end
+
+    it 'do not update fields for new record' do
+      expect(RspecUser.es_client).not_to receive(:update_fields)
+      record = RspecUser.new(id: 1, name: 'bob')
+      allow(record).to receive(:new_record?).and_return(true)
+      record.es_client_update_fields(name: 'Bob')
     end
   end
 
