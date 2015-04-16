@@ -32,7 +32,7 @@ module EsClient
       res << options[:path]
       if options[:query].present?
         res << '?'
-        res << options[:query].is_a?(String) ? options[:query] : options[:query].to_query
+        res << (options[:query].is_a?(String) ? options[:query] : options[:query].to_query)
       elsif @options[:pretty]
         res << '?'
       end
