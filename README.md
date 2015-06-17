@@ -55,25 +55,28 @@ index.search(query: {query_string: {query: 'table OR chair'}}).decoded
 ### Configuration options
 ```ruby
 EsClient.setup do |config|
-  # path to log file
+  # Elasticsearch host
+  # config.host = 'http://localhost:9200'
+
+  # Log file path
   config.log_path = Rails.root.join('log', 'elasticsearch.log')
 
-  # log level (successful requests logged in debug)
+  # Log level (successful requests logged in debug)
   # config.logger.level = ::Logger::Severity::INFO unless Rails.env.development?
 
-  # log options, should be set to false in production for better performance
+  # Log options, should be set to false in production for better performance
   #   `log_binary` - log binary data in bulk requests
   #   `log_response` - log response json, can be disabled in production
   #   `pretty` - pretty generate json in logs
   # config.logger_options = {log_binary: true, log_response: true, pretty: true}
 
-  # application wide index prefix
-  config.index_prefix = 'my_app_name_here'
+  # Application wide index prefix
+  # config.index_prefix = 'my_app_name_here'
 
-  # enable indexing callbacks
+  # Enable indexing callbacks
   # config.callbacks_enabled = true
 
-  # options passed to Excon initializer
+  # Options passed to http client initializer (Excon currently)
   # config.http_client_options = {persistent: true}
 end
 ```
